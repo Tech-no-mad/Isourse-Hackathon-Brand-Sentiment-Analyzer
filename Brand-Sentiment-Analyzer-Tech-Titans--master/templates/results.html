@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brand Sentiment Results</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> <!-- Added FontAwesome -->
+    <style>
+        body {
+            background: linear-gradient(135deg, #2c3e50, #8e44ad, #2980b9);
+            font-family: 'Arial', sans-serif;
+            color: #ecf0f1;
+            padding-top: 50px;
+        }
+
+        .container {
+            max-width: 900px;
+            background-color: #2d3436;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            margin-top: 50px;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        h3 {
+            font-size: 1.75rem;
+            font-weight: 500;
+            color: #f39c12;
+            margin-bottom: 15px;
+        }
+
+        .btn-secondary {
+            background-color: #e74c3c;
+            border-color: #e74c3c;
+            font-weight: 600;
+            border-radius: 30px;
+            padding: 14px;
+            font-size: 1.1rem;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+
+        .card-header {
+            background-color: #16a085;
+            color: #ecf0f1;
+            font-size: 1.5rem;
+            font-weight: bold;
+            padding: 10px;
+        }
+
+        .card-body {
+            background-color: #2d3436;
+            padding: 20px;
+        }
+
+        /* Responsive Flexbox for sentiment cards */
+        .sentiment-card {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .sentiment-item {
+            flex: 1;
+            text-align: center;
+            background-color: #34495e;
+            border-radius: 10px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .sentiment-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .sentiment-upvotes {
+            color: #2ecc71;
+        }
+
+        .sentiment-downvotes {
+            color: #e74c3c;
+        }
+
+        .sentiment-icon {
+            font-size: 2.5rem; /* Increased size for arrows */
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .sentiment-text {
+            display: inline-block;
+            vertical-align: middle;
+            font-size: 1.5rem;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 1rem;
+            color: #bdc3c7;
+        }
+
+        .footer a {
+            color: #f39c12;
+            text-decoration: none;
+        }
+
+        /* Responsive design adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .sentiment-card {
+                flex-direction: column; /* Stack up the sentiment cards on small screens */
+                gap: 20px;
+            }
+
+            .sentiment-item {
+                padding: 15px;
+            }
+
+            .btn-secondary {
+                font-size: 1rem;
+                padding: 12px;
+            }
+
+            .card-header {
+                font-size: 1.2rem;
+            }
+
+            .img-fluid {
+                max-width: 100%;
+                height: auto;
+                margin-top: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .sentiment-icon {
+                font-size: 2rem;
+            }
+
+            .sentiment-text {
+                font-size: 1.25rem;
+            }
+
+            .footer {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Sentiment Analysis for <strong>{{ brand }}</strong></h1>
+
+        <!-- Sentiment Cards (Upvotes / Downvotes) -->
+        <div class="sentiment-card">
+            <!-- Upvotes with Thumbs and Arrow -->
+            <div class="sentiment-item sentiment-upvotes">
+                <i class="sentiment-icon fas fa-arrow-up"></i> <!-- FontAwesome upward arrow -->
+                <i class="sentiment-icon fas fa-thumbs-up"></i> <!-- Thumbs-up icon -->
+                <div class="sentiment-text">
+                    <h4>Total Upvotes</h4>
+                    <p><strong>{{ total_upvotes }}</strong></p>
+                </div>
+            </div>
+
+            <!-- Downvotes with Thumbs and Arrow -->
+            <div class="sentiment-item sentiment-downvotes">
+                <i class="sentiment-icon fas fa-arrow-down"></i> <!-- FontAwesome downward arrow -->
+                <i class="sentiment-icon fas fa-thumbs-down"></i> <!-- Thumbs-down icon -->
+                <div class="sentiment-text">
+                    <h4>Total Downvotes</h4>
+                    <p><strong>{{ total_downvotes }}</strong></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Analysis -->
+        <div class="card">
+            <div class="card-header">
+                Performance Analysis
+            </div>
+            <div class="card-body">
+                <p>{{ performance }}</p>
+            </div>
+        </div>
+
+        <!-- Sentiment Distribution Image -->
+        <div class="mt-4">
+            <h3>Sentiment Distribution:</h3>
+            <img src="{{ sentiment_plot }}" alt="Sentiment Distribution" class="img-fluid">
+        </div>
+
+        <!-- Upvotes vs Downvotes Image -->
+        <div class="mt-4">
+            <h3>Upvotes vs Downvotes:</h3>
+            <img src="{{ upvotes_downvotes_plot }}" alt="Upvotes vs Downvotes" class="img-fluid">
+        </div>
+
+        <!-- Analyze Another Brand Button -->
+        <div class="mt-4 text-center">
+            <a href="/" class="btn btn-secondary w-100 py-2">Analyze Another Brand</a>
+        </div>
+
+        
+    </div>
+</body>
+</html>
